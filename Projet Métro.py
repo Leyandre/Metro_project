@@ -1,4 +1,5 @@
 import pygame, sys
+import os
 import time
 
 width = 1000
@@ -21,8 +22,7 @@ class point(object):
         elif isinstance(other, list) or isinstance(other, tuple):
             return point(self.x + other[0], self.y + other[1])
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __iadd__(self, other):
         if isinstance(other, point):
@@ -36,8 +36,7 @@ class point(object):
 
             return self
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __sub__(self, other):
         if isinstance(other, point):
@@ -45,8 +44,7 @@ class point(object):
         elif isinstance(other, list) or isinstance(other, tuple):
             return point(self.x - other[0], self.y - other[1])
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __isub__(self, other):
         if isinstance(other, point):
@@ -60,8 +58,7 @@ class point(object):
 
             return self
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __mul__(self, other):
         if isinstance(other, point):
@@ -69,8 +66,7 @@ class point(object):
         elif isinstance(other, list) or isinstance(other, tuple):
             return point(self.x * other[0], self.y * other[1])
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __imul__(self, other):
         if isinstance(other, point):
@@ -84,8 +80,7 @@ class point(object):
 
             return self
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __truediv__(self, other):
         if isinstance(other, point):
@@ -93,8 +88,7 @@ class point(object):
         elif isinstance(other, list) or isinstance(other, tuple):
             return point(self.x / other[0], self.y / other[1])
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def __itruediv__(self, other):
         if isinstance(other, point):
@@ -108,8 +102,7 @@ class point(object):
 
             return self
         else:
-            print("Error : {0} type used instead of list or tuple".format(other))
-            raise TypeError
+            raise TypeError("Error : {0} type used instead of list or tuple".format(other))
 
     def g_tuple(self):
         return (self.x, self.y)
@@ -133,7 +126,7 @@ class objet(object):
         elif isinstance(pt, list) or isinstance(pt, tuple):
             self.pt = point(pt[0], pt[1])
         else:
-            print("Error : {0} type instead of list, tuple or point".format(type(pt)))
+            raise TypeError("Error : {0} type instead of list, tuple or point".format(type(pt)))
 
     def load_img(self, name):
         self.img = pygame.image.load(name).convert_alpha()
@@ -159,7 +152,7 @@ class objet(object):
                 self.zone = pygame.Rect(xmin, ymin, zone[0], zone[1])
 
         else:
-            print("Error : {0} type instead of list or tuple".format(type(zone)))
+            raise TypeError("Error : {0} type instead of list or tuple".format(type(zone)))
 
 class SearchBar(objet):
 
@@ -243,18 +236,18 @@ class SearchBar(objet):
             return False
 
     def load_img_poss(self):
-        self.img_1_poss = pygame.image.load("Search_1_poss.png").convert_alpha()
+        self.img_1_poss = pygame.image.load("./data/Search_1_poss.png").convert_alpha()
         self.img_1_poss = pygame.transform.smoothscale(self.img_1_poss, ((self.img_1_poss.get_width() / 1.5), (self.img_1_poss.get_height() / 1.5)))
         self.img_1_poss_pt = point(self.pt.x, (self.pt.y + self.img.get_height() - 100))
 
-        self.img_up_poss = pygame.image.load("Search_up_poss.png").convert_alpha()
+        self.img_up_poss = pygame.image.load("./data/Search_up_poss.png").convert_alpha()
         self.img_up_poss = pygame.transform.smoothscale(self.img_up_poss, ((self.img_up_poss.get_width() / 1.5), (self.img_up_poss.get_height() / 1.5)))
         self.img_up_poss_pt = point(self.pt.x, (self.pt.y + self.img.get_height() - 100))
 
-        self.img_down_poss = pygame.image.load("Search_down_poss.png").convert_alpha()
+        self.img_down_poss = pygame.image.load("./data/Search_down_poss.png").convert_alpha()
         self.img_down_poss = pygame.transform.smoothscale(self.img_down_poss, ((self.img_down_poss.get_width() / 1.5), (self.img_down_poss.get_height() / 1.5)))
 
-        self.img_mid_poss = pygame.image.load("Search_mid_poss.png").convert_alpha()
+        self.img_mid_poss = pygame.image.load("./data/Search_mid_poss.png").convert_alpha()
         self.img_mid_poss = pygame.transform.smoothscale(self.img_mid_poss, ((self.img_mid_poss.get_width() / 1.5), (self.img_mid_poss.get_height() / 1.5)))
 
     def set_search_stations(self, list_station, dico_station):
@@ -266,29 +259,34 @@ class SearchBar(objet):
         else:
             list = list_station[0]
 
-        for elt in list:
-            ind = list_station[0].index(elt)
+        for ind, elt in enumerate(list):
 
             if ind == (self.limit - 1) and len(list_station[0]) > self.limit:
+                #Quand le nombre de possibilité est trop grand pour pouvoir tout montrer on garde la dernière barre
+                #pour indiquer le nombre de possibilités restantes non visibles
                 self.station_poss.append(Srch_station_choices(None, [], "+{0}".format(len(list_station[0]) - (self.limit - 1)), self.img_down_poss, (self.pt.x, memory_y)))
                 break
 
             elt_chr = dico_station[elt][0]
 
             if len(list_station[0]) == 1:
+                #Dans le cas d'une seule possibilité
                 self.station_poss.append(Srch_station_choices(elt, list_station[1][ind], elt_chr, self.img_1_poss, self.img_1_poss_pt.g_tuple()))
                 continue
 
             if ind == 0:
+                #Première possiblité (dans l'ordre alphabétique)
                 self.station_poss.append(Srch_station_choices(elt, list_station[1][ind], elt_chr, self.img_up_poss, self.img_up_poss_pt.g_tuple()))
                 memory_y = self.img_up_poss_pt.y + self.img_up_poss.get_height()
                 continue
 
             elif ind == (len(list_station[0]) - 1):
+                #Dernière possibilité (dans l'ordre alphabétique)
                 self.station_poss.append(Srch_station_choices(elt, list_station[1][ind], elt_chr, self.img_down_poss, (self.pt.x, memory_y)))
                 continue
 
             else:
+                #Autres possibilités
                 self.station_poss.append(Srch_station_choices(elt, list_station[1][ind], elt_chr, self.img_mid_poss, (self.pt.x, memory_y)))
                 memory_y += self.img_mid_poss.get_height()
 
@@ -384,7 +382,7 @@ class Trajets(object):
 
     def add_bloc(self, font, couleur):
         list_txt = []
-        img = pygame.image.load("Search_1_poss.png").convert_alpha(self.screen)
+        img = pygame.image.load("./data/Search_1_poss.png").convert_alpha(self.screen)
         font = font
         color = couleur
         larg = 4
@@ -422,7 +420,7 @@ class Trajets(object):
 def load_search_bars(couleur_def=(0, 0, 0), couleur_txt=(0, 0, 0)):
     dico_srch = {}
 
-    dico_srch["start"] = SearchBar(((width / 2), (height / 2)), 'Search_bar_no_bg_2.png', 'couriernew', 20, 5, zone=(440, 50))
+    dico_srch["start"] = SearchBar(((width / 2), (height / 2)), './data/Search_bar_no_bg_2.png', 'couriernew', 20, 5, zone=(440, 50))
     dico_srch["start"].set_def_word("Départ", couleur_def)
     dico_srch["start"].update_text('', couleur_txt)
 
@@ -430,7 +428,7 @@ def load_search_bars(couleur_def=(0, 0, 0), couleur_txt=(0, 0, 0)):
     start_hgt = dico_srch["start"].img.get_height() / 2
     above_start = start_y + start_hgt
 
-    dico_srch["end"] = SearchBar(((width / 2), above_start), 'Search_bar_no_bg_2.png', 'couriernew', 20, 4, zone=(440, 50))
+    dico_srch["end"] = SearchBar(((width / 2), above_start), './data/Search_bar_no_bg_2.png', 'couriernew', 20, 4, zone=(440, 50))
     dico_srch["end"].set_def_word("Arrivée", couleur_def)
     dico_srch["end"].update_text('', couleur_txt)
 
@@ -438,12 +436,12 @@ def load_search_bars(couleur_def=(0, 0, 0), couleur_txt=(0, 0, 0)):
 
 def load_background(screen, couleur):
     list = []
-    list.append(pygame.image.load("Background.jpg").convert(screen))
+    list.append(pygame.image.load("./data/Background.jpg").convert(screen))
 
-    list.append(pygame.image.load("Background_grid.png").convert_alpha(screen))
+    list.append(pygame.image.load("./data/Background_grid.png").convert_alpha(screen))
     list[-1] = pygame.transform.smoothscale(list[-1],((list[-1].get_width() * 1.42), (list[-1].get_height() * 1.42)))
 
-    list.append(pygame.image.load("Background_title.png").convert_alpha(screen))
+    list.append(pygame.image.load("./data/Background_title.png").convert_alpha(screen))
     list[-1] = pygame.transform.smoothscale(list[-1],
                                               ((list[-1].get_width() * 1.42), (list[-1].get_height() * 1.42)))
 
@@ -477,11 +475,17 @@ def change_aff_echap(bg, txt, couleur):
 
 
 def make_dic_stations(txt):
+    #Crée un dictionnaire associant à chaque station toutes les autres auxquelles elle est reliée
     list_lines = txt.readlines()
 
     stations = {}
 
     for line in list_lines:
+        #list_lines mets dans une liste tous les éléments de la ligne 
+
+        #dico_stations[num_station][0] = nom de la station
+        #dico_stations[num_station][1][x] -> toutes les stations directement connectées à celle-ci
+        #dico_stations[num_station][2][x] -> le temps de trajet entre les deux stations 
 
         line = line.strip()
         if line[0: 1] == 'V':
@@ -492,29 +496,18 @@ def make_dic_stations(txt):
             list_line = line
 
         if list_line[0] == 'V':
+            #Les lignes commençant par V associent à chaque station un numéro
+            #stations[0] = numéro de station unique relatif à la ligne de métro
             stations[int(list_line[1])] = [list_line[2], [], []]
 
         elif list_line[0] == 'E':
+            #Les lignes commençant par E associent 2 stations avec un temps de trajet
 
+            #Crée un lien dans le dictionnaire de la 1ère vers la 2ème avec son temps de trajet
             stations[int(list_line[1])][1].append(int(list_line[2]))
             stations[int(list_line[1])][2].append(int(list_line[3]))
 
-            if int(list_line[1]) == 259:
-                continue
-            if int(list_line[1]) == 196:
-                continue
-            if int(list_line[1]) == 373:
-                continue
-            if int(list_line[1]) == 36 and int(list_line[2]) == 198:
-                continue
-            if int(list_line[1]) == 198:
-                continue
-            if int(list_line[1]) == 52:
-                continue
-            if int(list_line[1]) == 145 and int(list_line[2]) == 373:
-                continue
-            if int(list_line[1]) == 201:
-                continue
+            #Crée un lien dans le dictionnaire de la 2me vers la 1ère avec son temps de trajet
             stations[int(list_line[2])][1].append(int(list_line[1]))
             stations[int(list_line[2])][2].append(int(list_line[3]))
 
@@ -545,7 +538,6 @@ def find_line(n_station, dic_station, ligne):
 
 
 def find_shortest_way(n_station, station_rech, way, dico_station, best_time=None):
-    #print(n_station)
 
     if n_station in station_rech:
         return True
@@ -639,18 +631,24 @@ def affiche_chemin(l_bloc, espacement=0):
 
 
 def search_station_word(answer, dico_station):
+    #Recherche toutes les stations dont le nom commence par l'input dans la barre de recherche
     station_poss = [[], []]
+
+    #station_poss[0][X] -> Station X possiblement rechercher par l'utilisateur
+    #station_poss[1][X][Y] -> Station Y alterego de la station X
 
     for station in dico_station:
 
-        if answer not in dico_station[station][0] and answer not in dico_station[station][0].lower() and answer not in \
-                dico_station[station][0].upper():
+        if answer not in dico_station[station][0].lower() and answer not in dico_station[station][0].upper():
+            #Si l'input n'est pas trouvé au début du nom de la station on passe à la prochaine station
             continue
         else:
             if len(station_poss[0]) == 0 or dico_station[station][0] != dico_station[station_poss[0][-1]][0]:
+                #Si la liste est encore vierge ou si ce n'est pas une station déjà mise dans la liste
                 station_poss[0].append(station)
                 station_poss[1].append([station])
             else:
+                #sinon la station a déjà été implanté dans la liste sous une ligne différente et on garde celle-ci dans une liste d'alterego
                 station_poss[1][-1].append(station)
 
     if len(station_poss[0]) == 0:
@@ -659,8 +657,16 @@ def search_station_word(answer, dico_station):
     return station_poss
 
 def answer_find_station(dico_station, answer_text):
+    #Standardise la réponse de l'utilisateur et l'envoie 
 
-    if answer_text != ' ' and answer_text != '':
+    #Supprime les espaces avant le texte
+    while answer_text != '' and answer_text[0] == ' ':
+        if answer_text == ' ':
+            answer_text = ''
+        else:
+            answer_text = answer_text[1:]
+
+    if answer_text != '':
         station_poss = search_station_word(answer_text, dico_station)
     else:
         return []
@@ -725,6 +731,17 @@ def show_path(dep_station, fin_station, dico_station, dico_line, screen, couleur
 
     return True
 
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.environ.get("_MEIPASS2",os.path.abspath("."))
+
+    return os.path.join(base_path, relative_path)
+
 if __name__ == '__main__':
     pygame.init()
 
@@ -737,17 +754,15 @@ if __name__ == '__main__':
 
     mouse = Mouse()
 
-    metro_txt = open("metro.txt", 'r')
+    metro_txt = open(resource_path("data/metro.txt"), 'r')
 
     background = load_background(fenetre, (255, 255, 255))
 
     # Fonction qui crée un dictionnaire de stations tel que : {numéro de station : [[nom][stations liées][temps des stations liées]]
     dic_stations = make_dic_stations(metro_txt)
-    # print(dic_stations)
 
     # fonction qui crée un dictionnaire des lignes du type {numéro de ligne : [stations]}
     dic_lignes = make_dic_lignes(dic_stations)
-    # print(dic_lignes)
 
     while True:
         blit_background(fenetre, background)
